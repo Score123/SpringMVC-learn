@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+    <mvc:annotation-driven>
+        <!--自定义的处理器-->
+        <mvc:return-value-handlers>
+            <bean class="com.bee.Handler.ResponseBodyEncryptReturnValueHandler">
+            </bean>
+        </mvc:return-value-handlers>
+        <!--自定义的解析器-->
+        <mvc:argument-resolvers>
+            <bean class="com.bee.Resolver.RequestBodyDecryptArgumentResolver"/>
+            <bean class="com.bee.Resolver.RequestParamDecryptMethodArgumentResolver"/>
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8"></property>
+        <property name="maxUploadSize" value="10485760000"></property>
+        <property name="maxInMemorySize" value="40960"></property>
+    </bean>
+
+    <context:component-scan base-package="com.bee.*">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    <!--<bean id="handler" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">-->
+        <!--<property name="responseBodyEncryptReturnValueHandler">-->
+            <!--<list>-->
+                <!--<bean class="com.bee.Handler.ResponseBodyEncryptReturnValueHandler"></bean>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+</beans>
